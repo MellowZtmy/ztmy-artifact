@@ -362,8 +362,10 @@ function createDisplay(mode, alubumName = '', puzzleIndex = -1) {
 
         // 一番上にスクロール
         scrollToTop();
-      } else if (mode === display.QUIZ) {
-        // QUIZ画面の場合
+      } else if (mode === display.SELECT) {
+        //////////////////////////////////////////
+        // SELECT画面
+        //////////////////////////////////////////
         var quiz = quizzes[currentQuizIndex];
         // 『』で囲む対象の区別
         let isgameModeLyricToSong =
