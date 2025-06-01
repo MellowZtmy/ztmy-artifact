@@ -16,8 +16,6 @@ const gameMode = {
 var appsettings = [];
 // 歌詞ファイル情報
 var artifacts = [];
-// ひとこと
-var acaneWords = [];
 // カラーセット
 var colorSets = [];
 // アルバム名リスト
@@ -523,16 +521,6 @@ function createDisplay(mode) {
           }
         });
 
-        // 全問正解の場合紙吹雪、ひとこと
-        if (correctCount === quizzesLength) {
-          tag += '<h2 class="h2-display font-one-point-two">ひとこと</h2>';
-          tag +=
-            '<div class="font-one-point-two">' +
-            acaneWords[getRamdomNumber(acaneWords.length)] +
-            '</div>';
-          $('#confetti').prepend('<canvas></canvas>');
-          dispConfetti();
-        }
         tag +=
           ' <button id="retry" onclick="createDisplay(display.TOP)" class="btn btn--main btn--radius btn--cubic">RETRY</button>';
 
