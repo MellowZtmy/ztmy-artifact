@@ -15,7 +15,7 @@ const gameMode = {
 // 設定ファイル情報
 var appsettings = [];
 // 歌詞ファイル情報
-var csvData = [];
+var artifacts = [];
 // ひとこと
 var acaneWords = [];
 // カラーセット
@@ -24,18 +24,6 @@ var colorSets = [];
 var songAlbums = [];
 var selectedAlbums = [];
 var albums = [];
-// ミニアルバム名リスト
-var songMinialbums = [];
-var selectedMinialbums = [];
-var minialbums = [];
-// 選択曲インデックス
-var selectedSongIndex = [];
-// クイズ
-var quizzes = [];
-// 現在のクイズインデックス
-var currentQuizIndex;
-// クイズ結果
-var selectedList = [];
 
 /**
  * 【イベント処理】
@@ -49,15 +37,10 @@ $(document).ready(async function () {
     // 1. 設定ファイル読み込み
     appsettings = await getJsonData('appsettings.json');
 
-    // 2. 歌詞情報読み込み
-    csvData = await fetchCsvData(appsettings.lyricsFileName);
-    songAlbums = csvData[appsettings.albumLine];
+    // 2. アーティファクト情報読み込み
+    artifacts = await fetchCsvData(appsettings.artifactsFileName);
+    songAlbums = artifacts[appsettings.albumLine];
     albums = [...new Set(songAlbums)].filter((item) => item !== '-');
-    songMinialbums = csvData[appsettings.minialbumLine];
-    minialbums = [...new Set(songMinialbums)].filter((item) => item !== '-');
-
-    // 3. ACAねさんのひとこと読み込み
-    acaneWords = await fetchCsvData(appsettings.acaneWordsFileName);
 
     // 4. カラーセット読み込み
     colorSets = await fetchCsvData(appsettings.colorSetsFileName, 1);
@@ -152,24 +135,24 @@ function createQuizzes() {
   // ゲームモード取得
   const currentGameMode = $('input[name="quizMode"]:checked').val();
   // 選択アルバムの曲名取得
-  const songs = csvData[appsettings.songNameLine].filter((_, index) =>
+  const songs = artifacts[appsettings.songNameLine].filter((_, index) =>
     selectedSongIndex.includes(index)
   );
   // 選択アルバムの歌詞取得
   const lyrics = [];
-  csvData.slice(appsettings.lyricsStartLine).forEach((lyric) => {
+  artifacts.slice(appsettings.lyricsStartLine).forEach((lyric) => {
     lyrics.push(lyric.filter((_, index) => selectedSongIndex.includes(index)));
   });
   // 曲の動画ID取得
-  const mvIds = csvData[appsettings.mvIdLine].filter((_, index) =>
+  const mvIds = artifacts[appsettings.mvIdLine].filter((_, index) =>
     selectedSongIndex.includes(index)
   );
   // 曲の作曲者取得
-  const composers = csvData[appsettings.composerLine].filter((_, index) =>
+  const composers = artifacts[appsettings.composerLine].filter((_, index) =>
     selectedSongIndex.includes(index)
   );
   // 曲の作詞者取得
-  const lyricists = csvData[appsettings.lyricistLine].filter((_, index) =>
+  const lyricists = artifacts[appsettings.lyricistLine].filter((_, index) =>
     selectedSongIndex.includes(index)
   );
   // 問題数取得
@@ -349,44 +332,6 @@ function createDisplay(mode) {
         // アルバム、ミニアルバムリストより出題する曲リスト取得
         selectedSongIndex = getSelectedSongIndex();
 
-        // ハイスコア表示
-        tag +=
-          ' <p class="right-text">High Score : ' +
-          (getLocal('ztmyLyricQuizHighScore') ?? '-') +
-          '</p>';
-
-        // モード選択
-        tag += ' <h2 class="h2-display">Mode</h2>';
-        tag += ' <div class="quiz-mode-container">';
-        for (const [modeKey, modeData] of Object.entries(gameMode)) {
-          tag +=
-            '   <input type="radio" id="' +
-            modeKey +
-            '" name="quizMode" value="' +
-            modeData.VALUE +
-            '" hidden ' +
-            (getLocal('gameMode')
-              ? modeData.VALUE === getLocal('gameMode') // ローカルストレージにゲームモードがある場合
-                ? 'checked'
-                : ''
-              : modeData.VALUE === gameMode.LYRIC_TO_SONG.VALUE // ローカルストレージにゲームモードがない場合
-              ? 'checked'
-              : '') +
-            '>';
-          tag +=
-            '   <label for="' +
-            modeKey +
-            '" class="quizModeRadio">' +
-            modeData.TEXT +
-            '</label>';
-        }
-        tag += ' </div>';
-        // 今のゲームモードをローカルストレージにセット
-        setLocal(
-          'gameMode',
-          getLocal('gameMode') ?? gameMode.LYRIC_TO_SONG.VALUE
-        );
-
         // アルバム
         tag += ' <h2 class="h2-display">Albums</h2>';
         albums.forEach(function (album, index) {
@@ -405,23 +350,6 @@ function createDisplay(mode) {
             '" onclick="clickAlbum(this)">';
         });
 
-        // ミニアルバム
-        tag += ' <h2 class="h2-display">Minialbums</h2>';
-        minialbums.forEach(function (album, index) {
-          tag +=
-            ' <img src="' +
-            appsettings.minialbumImagePath +
-            (index + 1) +
-            '_' +
-            album +
-            '.jpg" id="' +
-            album +
-            '" name="minialbum" alt="' +
-            album +
-            '" class="album' +
-            (selectedMinialbums.includes(album) ? '' : ' darkened') +
-            '" onclick="clickAlbum(this)">';
-        });
         tag +=
           ' <h2 class="center-text margin-top-20" id="songCount">' +
           selectedSongIndex.length +
@@ -590,26 +518,6 @@ function createDisplay(mode) {
               '.jpg" id="' +
               album +
               '" name="album" alt="' +
-              album +
-              '" class="album">';
-          }
-        });
-
-        tag +=
-          selectedMinialbums.length > 0
-            ? '<h2 class="h2-display">Minialbums</h2>'
-            : '';
-        minialbums.forEach(function (album, index) {
-          if (selectedMinialbums.includes(album)) {
-            tag +=
-              ' <img src="' +
-              appsettings.minialbumImagePath +
-              (index + 1) +
-              '_' +
-              album +
-              '.jpg" id="' +
-              album +
-              '" name="minialbum" alt="' +
               album +
               '" class="album">';
           }
