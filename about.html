@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>サイト情報 | ZTMY歌詞クイズ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      :root {
+        --accent-color: #e84fcf;
+        --bg-color: #f9f9fb;
+        --text-color: #333;
+        --tab-bg: #e5def0;
+        --tab-active-bg: #ffffff;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+        background: var(--bg-color);
+        color: var(--text-color);
+        line-height: 1.8;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+      h1,
+      h2,
+      h3 {
+        color: var(--accent-color);
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 0.3rem;
+      }
+      code {
+        background-color: #f5f5f5;
+        padding: 0.2rem 0.4rem;
+        border-radius: 4px;
+      }
+      .tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        border-bottom: 2px solid #ccc;
+        margin-bottom: 1rem;
+      }
+      .tab {
+        flex: 1 1 auto;
+        text-align: center;
+        padding: 0.6rem 1rem;
+        cursor: pointer;
+        background: var(--tab-bg);
+        border-radius: 8px 8px 0 0;
+        transition: all 0.2s ease-in-out;
+        font-weight: 500;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        min-width: 120px;
+        white-space: nowrap;
+      }
+      .tab:hover {
+        background: #dcd2eb;
+      }
+      .tab.active {
+        background: var(--tab-active-bg);
+        font-weight: bold;
+        border-bottom: 2px solid var(--tab-active-bg);
+      }
+      .tab-content {
+        display: none;
+        background: #fff;
+        padding: 1.5rem;
+        border-radius: 0 0 10px 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+      .tab-content.active {
+        display: block;
+      }
+      a {
+        color: var(--accent-color);
+        word-break: break-word;
+      }
+      ul,
+      ol {
+        padding-left: 1.2rem;
+      }
+      @media screen and (max-width: 600px) {
+        body {
+          padding: 1rem;
+        }
+        .tab {
+          flex: 1 1 100%;
+          font-size: 1rem;
+        }
+        h1 {
+          font-size: 1.3rem;
+        }
+        h2 {
+          font-size: 1.1rem;
+        }
+        p {
+          font-size: 0.95rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>サイト情報 | ZTMY歌詞クイズ</h1>
+    <div class="tabs">
+      <div class="tab active" data-tab="about">このサイトについて</div>
+      <div class="tab" data-tab="quote">引用について</div>
+      <div class="tab" data-tab="disclaimer">免責事項</div>
+      <div class="tab" data-tab="privacy">プライバシーポリシー</div>
+    </div>
+
+    <section id="about" class="tab-content active">
+      <h2>このサイトについて</h2>
+      <p>
+        ZTMY歌詞クイズは、「ずっと真夜中でいいのに。」の楽曲を愛するファンが制作した非公式のクイズサイトです。
+      </p>
+      <p>
+        歌詞の引用は、著作権法に則り、必要最小限にとどめています。また、歌詞・画像・動画の使用については、公式のガイドライン（<a
+          href="https://zutomayo.net/legal/"
+          target="_blank"
+          >https://zutomayo.net/legal/</a
+        >）を遵守しています。
+      </p>
+      <p>
+        このサイトは営利を目的とせず、楽曲への理解や関心を深めてもらうことを目的としたファン活動の一環です。公式サイトではありませんので、その点をご理解のうえご利用ください。
+      </p>
+    </section>
+
+    <section id="quote" class="tab-content">
+      <h2>引用について</h2>
+      <p>
+        当サイトでは、クイズ問題の一部として歌詞の一節を引用しています。これらは<strong>著作権法第32条</strong>（引用）に基づき、最小限の範囲で使用しています。
+      </p>
+      <h3>対象となるコンテンツ</h3>
+      <p>
+        楽曲の歌詞やメロディは作詞者・作曲者の著作物であり、キャラクターやロゴなどは権利者によって管理されています。
+      </p>
+      <p>
+        無断転載は行わず、非営利のファン活動として、権利を尊重しながら運営しています。
+      </p>
+      <h3>引用の目的</h3>
+      <ul>
+        <li>楽曲への興味・理解を深める</li>
+        <li>作品の魅力を正しく伝える</li>
+        <li>出典を明記し、著作者の権利を尊重する</li>
+      </ul>
+      <h3>引用の条件と配慮</h3>
+      <ol>
+        <li>
+          <strong>主従関係の明確化：</strong
+          >クイズが主であり、歌詞は補足的です。
+        </li>
+        <li><strong>引用の最小化：</strong>1〜2行程度にとどめています。</li>
+        <li>
+          <strong>出典の明記：</strong
+          ><code>ずっと真夜中でいいのに。『秒針を噛む』（作詞：ACAね）</code>
+        </li>
+        <li><strong>非営利運営：</strong>収益を目的とせず運営しています。</li>
+      </ol>
+      <h3>権利者の皆様へ</h3>
+      <p>
+        掲載内容に問題がある場合は、<a href="mailto:mellowztmy@gmail.com"
+          >mellowztmy@gmail.com</a
+        >
+        までご連絡ください。迅速に対応いたします。
+      </p>
+      <h3>公式リンクの掲載</h3>
+      <p>
+        できるだけ<strong>公式動画や配信サービスへのリンク</strong>を掲載し、楽曲の正当な価値を広めることを目指しています。
+      </p>
+    </section>
+
+    <section id="disclaimer" class="tab-content">
+      <h2>免責事項</h2>
+      <p>
+        当サイトでは正確な情報の提供に努めていますが、その内容の完全性や正確性を保証するものではありません。
+      </p>
+      <p>
+        また、リンク先の内容やサービスについても一切の責任を負いかねます。予告なく内容の変更・削除を行うことがあります。あらかじめご了承ください。
+      </p>
+    </section>
+
+    <section id="privacy" class="tab-content">
+      <h2>プライバシーポリシー</h2>
+      <p>
+        当サイトでは、アクセス解析やサービス向上のために Cookie
+        や第三者ツールを使用する場合があります。
+      </p>
+      <p>
+        収集する情報は適切に管理され、個人が特定できる形での利用は一切行いません。Cookieの利用を希望されない場合は、お使いのブラウザ設定から拒否が可能です。
+      </p>
+    </section>
+
+    <script>
+      const tabs = document.querySelectorAll('.tab');
+      const contents = document.querySelectorAll('.tab-content');
+      tabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          tabs.forEach((t) => t.classList.remove('active'));
+          tab.classList.add('active');
+          const target = tab.dataset.tab;
+          contents.forEach((c) => {
+            c.classList.toggle('active', c.id === target);
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
