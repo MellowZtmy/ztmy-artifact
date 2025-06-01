@@ -4,8 +4,9 @@
 // 画面表示モード
 const display = {
   TOP: 1,
-  QUIZ: 2,
-  RESULT: 3,
+  SELECT: 2,
+  PUZZLE: 3,
+  RESULT: 4,
 };
 // ゲームモード
 const gameMode = {
@@ -18,10 +19,6 @@ var appsettings = [];
 var artifacts = [];
 // カラーセット
 var colorSets = [];
-// アルバム名リスト
-var songAlbums = [];
-var selectedAlbums = [];
-var albums = [];
 
 /**
  * 【イベント処理】
@@ -36,13 +33,15 @@ $(document).ready(async function () {
     appsettings = await getJsonData('appsettings.json');
 
     // 2. アーティファクト情報読み込み
-    artifacts = await fetchCsvData(appsettings.artifactsFileName);
-    songAlbums = artifacts[appsettings.albumLine];
-    albums = [...new Set(songAlbums)].filter((item) => item !== '-');
+    artifacts = await fetchCsvData(
+      appsettings.artifactsFileName,
+      appsettings.artifactSkipRowCount
+    );
 
     // 4. カラーセット読み込み
     colorSets = await fetchCsvData(appsettings.colorSetsFileName, 1);
 
+    console.log('アーティファクト情報:', artifacts);
     // 5. 開始画面を表示
     createDisplay(display.TOP);
   } catch (error) {
@@ -312,7 +311,7 @@ function createQuizzes() {
 }
 
 // 画面タグ作成
-function createDisplay(mode) {
+function createDisplay(mode, alubumName = '', puzzleIndex = -1) {
   // 少し待ってから処理を開始（スピナー表示のため、DOM描画を反映させるため）
   setTimeout(() => {
     try {
@@ -324,13 +323,13 @@ function createDisplay(mode) {
 
       // タグ作成
       if (mode === display.TOP) {
-        // 選択中アルバム設定
-        selectedAlbums = getLocalArray('selectedAlbums');
-        selectedMinialbums = getLocalArray('selectedMinialbums');
-        // アルバム、ミニアルバムリストより出題する曲リスト取得
-        selectedSongIndex = getSelectedSongIndex();
-
-        // アルバム
+        //////////////////////////////////////////
+        // TOP画面
+        //////////////////////////////////////////
+        // アルバム表示
+        let albums = [
+          ...new Set(artifacts.map((row) => row[appsettings.albumNameCol])),
+        ];
         tag += ' <h2 class="h2-display">Albums</h2>';
         albums.forEach(function (album, index) {
           tag +=
@@ -343,22 +342,12 @@ function createDisplay(mode) {
             album +
             '" name="album" alt="' +
             album +
-            '" class="album' +
-            (selectedAlbums.includes(album) ? '' : ' darkened') +
-            '" onclick="clickAlbum(this)">';
+            '" class="album" onclick="createDisplay(display.SELECT,\'' +
+            album +
+            '\')">' +
+            album;
         });
-
-        tag +=
-          ' <h2 class="center-text margin-top-20" id="songCount">' +
-          selectedSongIndex.length +
-          ' Songs</h2>';
-        // STARTボタン
-        tag += '<button id="start"';
-        tag += '  onclick="loadQuiz(true)"';
-        tag += '  class="btn btn--main btn--radius btn--cubic bottom-button"';
-        tag += '>';
-        tag += '  START';
-        tag += '</button>';
+        // カラーチェンジ
         tag +=
           ' <h2 id="changeColor" class="center-text margin-top-20" onclick="changeColor(1)">Color ↺</h2>';
         tag += ' </div>';
