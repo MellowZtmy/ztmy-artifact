@@ -330,8 +330,13 @@ function createDisplay(mode, alubumName = '', puzzleIndex = -1) {
         let albums = [
           ...new Set(artifacts.map((row) => row[appsettings.albumNameCol])),
         ];
-        tag += ' <h2 class="h2-display">Albums</h2>';
+        tag += ' <h2 class="h2-display">Albums Select</h2>';
+        tag += '<div class="album-list">';
         albums.forEach(function (album, index) {
+          tag +=
+            '<div class="album-item" onclick="createDisplay(display.SELECT,\'' +
+            album +
+            '\')">';
           tag +=
             ' <img src="' +
             appsettings.albumImagePath +
@@ -342,11 +347,24 @@ function createDisplay(mode, alubumName = '', puzzleIndex = -1) {
             album +
             '" name="album" alt="' +
             album +
-            '" class="album" onclick="createDisplay(display.SELECT,\'' +
-            album +
-            '\')">' +
-            album;
+            '" class="album">';
+          tag += '<div class="album-title">' + album + '</div>';
+          tag += ' </div>';
         });
+        // // TODO ぐされと沈香学ができれば削除↓
+        tag += '<div class="album-item">';
+        tag +=
+          '  <img src="images/album/はてな.jpg" alt="はてな" class="album">';
+        tag += '  <div class="album-title">Coming Soon...</div>';
+        tag += '</div>';
+        tag += '<div class="album-item">';
+        tag +=
+          '  <img src="images/album/はてな.jpg" alt="はてな" class="album">';
+        tag += '  <div class="album-title">Coming Soon...</div>';
+        tag += '</div>';
+        // // TODO ぐされと沈香学ができれば削除↑
+        tag += ' </div>'; // album-list
+
         // カラーチェンジ
         tag +=
           ' <h2 id="changeColor" class="center-text margin-top-20" onclick="changeColor(1)">Color ↺</h2>';
