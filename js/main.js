@@ -50,266 +50,6 @@ $(document).ready(async function () {
   }
 });
 
-// 2. クイズ読込
-function loadQuiz(isInit) {
-  try {
-    // 再開の場合
-    if (isInit) {
-      // 現在の問題初期化
-      currentQuizIndex = 0;
-      // 結果初期化
-      selectedList = [];
-      // クイズ作成
-      quizzes = createQuizzes();
-      // 一番上にスクロール
-      scrollToTop();
-    }
-
-    // クイズ画面を表示
-    createDisplay(display.QUIZ);
-  } catch (error) {
-    // エラーハンドリング
-    showError('Failed to load quiz:', error);
-  }
-}
-
-// 3. 選択肢タップ
-function onSelect(selected) {
-  try {
-    // クイズ取得
-    var quiz = quizzes[currentQuizIndex];
-
-    // 結果保持
-    selectedList.push(selected);
-
-    // ラジオボタン制御
-    $('[name="choices"]').each(function () {
-      // 非活性
-      $(this).prop('disabled', true);
-      // 色変え
-      var value = $(this).val();
-      if (value == quiz.correctAnswer) {
-        // 正解の択
-        $(this).parent().addClass('label-correct');
-        $('#marubatu' + value).append('〇');
-      } else if (value == selected) {
-        // 不正解の択(選んだ時だけ)
-        $(this).parent().addClass('label-incorrect');
-        $('#marubatu' + value).append('✕');
-      }
-    });
-
-    // 最終問題ではない場合次の問題へ
-    if (quizzes[currentQuizIndex + 1]) {
-      currentQuizIndex++;
-    }
-    // NEXTボタン、RESULTボタン、MV表示
-    $('#next').removeClass('visibility-hidden');
-    $('#result').removeClass('visibility-hidden');
-    $('#mv').show();
-  } catch (error) {
-    // エラーハンドリング
-    showError('Failed to show select:', error);
-  }
-}
-
-// 4. Result画面表示
-function showResult() {
-  try {
-    // クイズ画面を表示
-    createDisplay(display.RESULT);
-  } catch (error) {
-    // エラーハンドリング
-    showError('Failed to result select:', error);
-  }
-}
-
-/**
- * 【Sub関数】
- */
-// クイズ作成
-function createQuizzes() {
-  // ゲームモード取得
-  const currentGameMode = $('input[name="quizMode"]:checked').val();
-  // 選択アルバムの曲名取得
-  const songs = artifacts[appsettings.songNameLine].filter((_, index) =>
-    selectedSongIndex.includes(index)
-  );
-  // 選択アルバムの歌詞取得
-  const lyrics = [];
-  artifacts.slice(appsettings.lyricsStartLine).forEach((lyric) => {
-    lyrics.push(lyric.filter((_, index) => selectedSongIndex.includes(index)));
-  });
-  // 曲の動画ID取得
-  const mvIds = artifacts[appsettings.mvIdLine].filter((_, index) =>
-    selectedSongIndex.includes(index)
-  );
-  // 曲の作曲者取得
-  const composers = artifacts[appsettings.composerLine].filter((_, index) =>
-    selectedSongIndex.includes(index)
-  );
-  // 曲の作詞者取得
-  const lyricists = artifacts[appsettings.lyricistLine].filter((_, index) =>
-    selectedSongIndex.includes(index)
-  );
-  // 問題数取得
-  const quizzesLength = songs.length;
-  // 選択肢数取得
-  const choiceLength = appsettings.choiceLength;
-
-  // 正常に処理できるかチェック
-  if (!appsettings.allowSameSong && songs.length < quizzesLength) {
-    throw new Error(
-      '全曲数' +
-        songs.length +
-        '曲です。問題の重複を認めない設定で' +
-        quizzesLength +
-        '曲の問題は作れません。'
-    );
-  }
-  if (songs.length < choiceLength) {
-    throw new Error('アルバムを1つ以上選んでね');
-  }
-  if (!currentGameMode) {
-    throw new Error('モードを選んでね');
-  }
-
-  // 各変数初期化
-  // 問題歌詞リスト
-  let questions = [];
-  // 正解リスト
-  let songList = []; // 正解（曲名 or 歌詞）
-  // 選択肢リスト(2次元配列)
-  let choices = [[]];
-  // 正解選択肢リスト
-  let correctAnswers = [];
-  // MVIDリスト
-  let mvIdList = [];
-  // 投稿日リスト
-  let uploadedDateList = [];
-  // 作曲者リスト
-  let composerList = [];
-  // 作詞者リスト
-  let lyricistList = [];
-
-  // 問題数分処理する
-  for (let i = 0; i < quizzesLength; i++) {
-    // 1. 正解曲決定
-    let songIndex = '';
-    let song = '';
-    while (true) {
-      // 乱数生成し、正解の曲を設定
-      songIndex = getRamdomNumber(songs.length);
-
-      // 曲取得
-      song = songs[songIndex];
-
-      // 曲名が取得でき被っていない場合正解曲決定
-      if (song !== '' && !songList.includes(song)) {
-        // 正解の曲リストに曲追加
-        songList.push(song); // 歌詞モードでもベースは曲
-        // mvID追加
-        mvIdList.push(mvIds[songIndex]);
-        // 作曲者追加
-        composerList.push(composers[songIndex]);
-        // 作詞者追加
-        lyricistList.push(lyricists[songIndex]);
-        break;
-      }
-    }
-
-    // 選択肢作成
-    choices[i] = [];
-    if (currentGameMode === gameMode.LYRIC_TO_SONG.VALUE) {
-      // 歌詞から曲を当てる（元のモード）
-      choices[i][0] = song;
-
-      for (let j = 1; j < choiceLength; j++) {
-        while (true) {
-          const wrongSongIndex = getRamdomNumber(songs.length);
-          const wrongSong = songs[wrongSongIndex];
-          if (wrongSong !== '' && !choices[i].includes(wrongSong)) {
-            choices[i][j] = wrongSong;
-            break;
-          }
-        }
-      }
-
-      choices[i] = shuffle(choices[i]);
-      correctAnswers.push(choices[i].indexOf(song));
-
-      // 3. 問題文歌詞作成
-      while (true) {
-        // 乱数生成し、問題文の歌詞を設定
-        const lyricsIndex = getRamdomNumber(lyrics.length);
-
-        // 歌詞取得
-        const lyric = lyrics[lyricsIndex][songIndex];
-
-        // 問題文が取得でき、被っていない場合歌詞決定
-        if (
-          lyric !== '' &&
-          (appsettings.allowSameSong || !questions.includes(lyric))
-        ) {
-          questions.push(lyric); // 問題文に歌詞を使う
-          break;
-        }
-      }
-    } else if (currentGameMode === gameMode.SONG_TO_LYRIC.VALUE) {
-      // 曲から歌詞を当てる
-      // 正解の歌詞
-      let correctLyric = '';
-      while (true) {
-        const lyricsIndex = getRamdomNumber(lyrics.length);
-        correctLyric = lyrics[lyricsIndex][songIndex];
-        if (
-          correctLyric !== '' &&
-          (appsettings.allowSameSong || !choices.flat().includes(correctLyric))
-        ) {
-          break;
-        }
-      }
-
-      choices[i][0] = correctLyric;
-
-      let usedWrongSongIndexes = [songIndex]; // 正解曲インデックスを除外する
-
-      for (let j = 1; j < choiceLength; j++) {
-        while (true) {
-          const wrongSongIndex = getRamdomNumber(songs.length);
-
-          // 正解と同じ曲の歌詞はスキップ
-          if (usedWrongSongIndexes.includes(wrongSongIndex)) continue;
-
-          const lyricsIndex = getRamdomNumber(lyrics.length);
-          const wrongLyric = lyrics[lyricsIndex][wrongSongIndex];
-
-          if (wrongLyric !== '' && !choices[i].includes(wrongLyric)) {
-            choices[i][j] = wrongLyric;
-            usedWrongSongIndexes.push(wrongSongIndex);
-            break;
-          }
-        }
-      }
-
-      choices[i] = shuffle(choices[i]);
-      correctAnswers.push(choices[i].indexOf(correctLyric));
-      questions.push(song); // 問題文には曲名を使う
-    }
-  }
-
-  // 戻り値作成
-  return questions.map((question, index) => ({
-    song: songList[index],
-    question: question,
-    correctAnswer: correctAnswers[index],
-    choices: choices[index],
-    mvId: mvIdList[index],
-    composer: composerList[index],
-    lyricist: lyricistList[index],
-  }));
-}
-
 // 画面タグ作成
 function createDisplay(mode, alubumName = '', puzzleIndex = -1) {
   // 少し待ってから処理を開始（スピナー表示のため、DOM描画を反映させるため）
@@ -330,7 +70,7 @@ function createDisplay(mode, alubumName = '', puzzleIndex = -1) {
         let albums = [
           ...new Set(artifacts.map((row) => row[appsettings.albumNameCol])),
         ];
-        tag += ' <h2 class="h2-display">Albums Select</h2>';
+        tag += ' <h2 class="h2-display">Album Select</h2>';
         tag += '<div class="album-list">';
         albums.forEach(function (album, index) {
           tag +=
@@ -351,7 +91,7 @@ function createDisplay(mode, alubumName = '', puzzleIndex = -1) {
           tag += '<div class="album-title">' + album + '</div>';
           tag += ' </div>';
         });
-        // // TODO ぐされと沈香学ができれば削除↓
+        // // TODO アルバム追加できれば削除↓
         tag += '<div class="album-item">';
         tag +=
           '  <img src="images/album/はてな.jpg" alt="はてな" class="album">';
@@ -362,7 +102,7 @@ function createDisplay(mode, alubumName = '', puzzleIndex = -1) {
           '  <img src="images/album/はてな.jpg" alt="はてな" class="album">';
         tag += '  <div class="album-title">Coming Soon...</div>';
         tag += '</div>';
-        // // TODO ぐされと沈香学ができれば削除↑
+        // // TODO アルバム追加できれば削除↑
         tag += ' </div>'; // album-list
 
         // カラーチェンジ
