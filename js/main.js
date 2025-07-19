@@ -92,24 +92,46 @@ function renderSelectScreen(albumName) {
   let dispArtifacts = artifacts.filter(
     (row) => row[appsettings.albumNameCol] === albumName
   );
+
+  // 曲名でグループ化
+  const groupedBySong = {};
   dispArtifacts.forEach((artifact, index) => {
-    const div = document.createElement('div');
-    div.className = 'album-item';
-    div.onclick = () => goToScreen(display.PUZZLE, albumName, index);
+    const songName = artifact[appsettings.songNameCol]; // 曲名列
 
-    const img = document.createElement('img');
-    img.src = `${appsettings.albumImagePath}${index + 1}_${albumName}.jpg`;
-    img.alt = albumName;
-    img.className = 'album';
+    if (!groupedBySong[songName]) {
+      groupedBySong[songName] = [];
+    }
 
-    const titleDiv = document.createElement('div');
-    titleDiv.className = 'album-title';
-    titleDiv.textContent = artifact[appsettings.artifactsNameCol];
-
-    div.appendChild(img);
-    div.appendChild(titleDiv);
-    selectList.appendChild(div);
+    // アーティファクトにインデックスを保持しておく（クリック時に使う）
+    groupedBySong[songName].push({ artifact, index });
   });
+
+  // グループごとに描画
+  for (const song in groupedBySong) {
+    const songHeader = document.createElement('h3');
+    songHeader.className = 'song-header';
+    songHeader.textContent = song;
+    selectList.appendChild(songHeader);
+
+    const songContainer = document.createElement('div');
+    songContainer.className = 'song-artifacts';
+
+    groupedBySong[song].forEach(({ artifact, index }) => {
+      const div = document.createElement('div');
+      div.className = 'artifact-item';
+      div.onclick = () => goToScreen(display.PUZZLE, albumName, index);
+
+      const img = document.createElement('img');
+      img.src = `${appsettings.albumImagePath}${index + 1}_${albumName}.jpg`;
+      img.alt = albumName;
+      img.className = 'artifact';
+
+      div.appendChild(img);
+      songContainer.appendChild(div);
+    });
+
+    selectList.appendChild(songContainer);
+  }
 
   // 戻るボタン
   document.getElementById('back-to-top').onclick = () =>

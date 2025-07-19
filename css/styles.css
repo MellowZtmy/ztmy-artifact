@@ -196,3 +196,37 @@ html {
     clip-path: inset(0 0% 0 0);
   }
 }
+
+/* アーティファクト選択：曲名（大見出し） */
+.song-header {
+  font-size: 1.6rem;       /* 大きく目立たせる */
+  font-weight: bold;
+  margin-top: 2rem;
+  margin-bottom: 0.8rem;
+  /* 文字色は指定しない（既存テーマに従う） */
+  border-bottom: 2px solid #ccc; /* 見出しっぽく */
+  padding-bottom: 0.4rem;
+}
+
+/* アーティファクトリスト */
+.song-artifacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 2rem;
+}
+
+/* アーティファクト画像 */
+.artifact-item img.artifact {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #aaa;
+  transition: transform 0.2s ease;
+}
+
+/* ホバーで拡大効果 */
+.artifact-item img.artifact:hover {
+  transform: scale(1.05);
+}
