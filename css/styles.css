@@ -73,7 +73,7 @@ html {
 }
 
 /* ボタン */
-.quiz-mode-container {
+.normalButtonContainer {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -81,7 +81,7 @@ html {
   margin: 20px 0;
 }
 
-.quizModeRadio {
+.normalButton {
   display: inline-block;
   padding: 12px 24px;
   font-size: 1rem;
@@ -93,7 +93,7 @@ html {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.quizModeRadio:hover {
+.normalButton:hover {
   background-color: #f7f7f7;
 }
 

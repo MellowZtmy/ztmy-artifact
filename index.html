@@ -49,36 +49,28 @@
       <div id="screen-select" class="screen" hidden>
         <h2 class="h2-display">Artifacts Select</h2>
         <div class="album-list" id="album-list-select"></div>
-        <div class="quiz-mode-container" id="back-to-top">
-          <input type="button" name="quizMode" value="clear" hidden="" />
-          <label for="clear" class="quizModeRadio">←BACK</label>
+        <div class="normalButtonContainer" id="back-to-top">
+          <input type="button" value="clear" hidden="" />
+          <label for="clear" class="normalButton">←BACK</label>
         </div>
       </div>
 
       <div id="screen-puzzle" class="screen" hidden>
         <h2 class="h2-display">Puzzle</h2>
         <div id="puzzle-content"></div>
-        <div class="quiz-mode-container" id="back-to-select">
-          <input type="button" name="quizMode" value="clear" hidden="" />
-          <label for="clear" class="quizModeRadio">←BACK</label>
+        <div class="normalButtonContainer" id="back-to-select">
+          <input type="button" value="clear" hidden="" />
+          <label for="clear" class="normalButton">←BACK</label>
         </div>
       </div>
 
       <div id="screen-result" class="screen" hidden>
         <h2 class="h2-display">Result</h2>
         <div id="result-content"></div>
-        <button
-          id="back-to-puzzle"
-          class="btn btn--main btn--radius btn--cubic"
-        >
-          ←BACK
-        </button>
-        <button
-          id="back-to-top-from-result"
-          class="btn btn--main btn--radius btn--cubic"
-        >
-          トップへ戻る
-        </button>
+        <div class="normalButtonContainer" id="back-to-puzzzle">
+          <input type="button" value="clear" hidden="" />
+          <label for="clear" class="normalButton">TOP</label>
+        </div>
       </div>
     </div>
 
