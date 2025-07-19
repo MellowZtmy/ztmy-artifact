@@ -1,188 +1,136 @@
-/**
- * 【定数設定】
- */
-// 画面表示モード
 const display = {
-  TOP: 1,
-  SELECT: 2,
-  PUZZLE: 3,
-  RESULT: 4,
+  TOP: 'top',
+  SELECT: 'select',
+  PUZZLE: 'puzzle',
+  RESULT: 'result',
 };
-// ゲームモード
-const gameMode = {
-  LYRIC_TO_SONG: { VALUE: '1', TEXT: '歌詞から曲名' },
-  SONG_TO_LYRIC: { VALUE: '2', TEXT: '曲名から歌詞' },
-};
-// 設定ファイル情報
+
 var appsettings = [];
-// 歌詞ファイル情報
 var artifacts = [];
-// カラーセット
 var colorSets = [];
 
-/**
- * 【イベント処理】
- */
-// 1. 画面表示
+var currentAlbum = '';
+var currentArtifactIndex = 0;
+
 $(document).ready(async function () {
   try {
-    // スピナー表示
     $('#spinner').show();
 
-    // 1. 設定ファイル読み込み
     appsettings = await getJsonData('appsettings.json');
 
-    // 2. アーティファクト情報読み込み
     artifacts = await fetchCsvData(
       appsettings.artifactsFileName,
       appsettings.artifactSkipRowCount
     );
 
-    // 4. カラーセット読み込み
     colorSets = await fetchCsvData(appsettings.colorSetsFileName, 1);
 
-    console.log('アーティファクト情報:', artifacts);
-    // 5. 開始画面を表示
-    createDisplay(display.TOP);
+    // 初期画面表示
+    goToScreen(display.TOP);
+
+    // カラーチェンジ
+    changeColor(0);
   } catch (error) {
-    // エラーハンドリング
     showError('Failed to load data:', error);
   }
 });
 
-// 画面タグ作成
-function createDisplay(mode, alubumName = '', artifactIndex = 0) {
-  // 少し待ってから処理を開始（スピナー表示のため、DOM描画を反映させるため）
-  setTimeout(() => {
-    try {
-      // タグクリア
-      $('#display').empty();
+function goToScreen(screenName, albumName = '', artifactIndex = 0) {
+  // 全画面非表示
+  document.querySelectorAll('.screen').forEach((el) => (el.hidden = true));
 
-      // 変数初期化
-      var tag = '';
+  if (screenName === display.TOP) {
+    document.getElementById('screen-top').hidden = false;
+    renderTopScreen();
+  } else if (screenName === display.SELECT) {
+    currentAlbum = albumName;
+    document.getElementById('screen-select').hidden = false;
+    renderSelectScreen(albumName);
+  } else if (screenName === display.PUZZLE) {
+    currentArtifactIndex = artifactIndex;
+    document.getElementById('screen-puzzle').hidden = false;
+    renderPuzzleScreen(albumName, artifactIndex);
+  } else if (screenName === display.RESULT) {
+    document.getElementById('screen-result').hidden = false;
+    renderResultScreen();
+  }
 
-      // タグ作成
-      if (mode === display.TOP) {
-        //////////////////////////////////////////
-        // TOP画面
-        //////////////////////////////////////////
-        // アルバム表示
-        let albums = [
-          ...new Set(artifacts.map((row) => row[appsettings.albumNameCol])),
-        ];
-        tag += ' <h2 class="h2-display">Album Select</h2>';
-        tag += '<div class="album-list">';
-        albums.forEach(function (album, index) {
-          tag +=
-            '<div class="album-item" onclick="createDisplay(display.SELECT,\'' +
-            album +
-            '\')">';
-          tag +=
-            ' <img src="' +
-            appsettings.albumImagePath +
-            +(index + 1) +
-            '_' +
-            album +
-            '.jpg" id="' +
-            album +
-            '" name="album" alt="' +
-            album +
-            '" class="album">';
-          tag += '<div class="album-title">' + album + '</div>';
-          tag += ' </div>';
-        });
-        // // TODO アルバム追加できれば削除↓
-        tag += '<div class="album-item">';
-        tag +=
-          '  <img src="images/album/はてな.jpg" alt="はてな" class="album">';
-        tag += '  <div class="album-title">Coming Soon...</div>';
-        tag += '</div>';
-        tag += '<div class="album-item">';
-        tag +=
-          '  <img src="images/album/はてな.jpg" alt="はてな" class="album">';
-        tag += '  <div class="album-title">Coming Soon...</div>';
-        tag += '</div>';
-        // // TODO アルバム追加できれば削除↑
-        tag += ' </div>'; // album-list
+  $('#spinner').hide();
+}
 
-        // カラーチェンジ
-        tag +=
-          ' <h2 id="changeColor" class="center-text margin-top-20" onclick="changeColor(1)">Color ↺</h2>';
-        tag += ' </div>';
+function renderTopScreen() {
+  const albumList = document.getElementById('album-list-top');
+  albumList.innerHTML = '';
 
-        // サイト情報
-        tag += ' <footer style="text-align: center; margin-top: 2rem;">';
-        tag +=
-          '   <a href="about.html" target="_blank" rel="noopener noreferrer">サイト情報</a>';
-        tag += ' </footer>';
-        // 紙吹雪解除
-        $('canvas')?.remove();
+  let albums = [
+    ...new Set(artifacts.map((row) => row[appsettings.albumNameCol])),
+  ];
+  albums.forEach((album, index) => {
+    const div = document.createElement('div');
+    div.className = 'album-item';
+    div.onclick = () => goToScreen(display.SELECT, album);
 
-        // 一番上にスクロール
-        scrollToTop();
-      } else if (mode === display.SELECT) {
-        //////////////////////////////////////////
-        // SELECT画面
-        //   引数：alubumName
-        //////////////////////////////////////////
+    const img = document.createElement('img');
+    img.src = `${appsettings.albumImagePath}${index + 1}_${album}.jpg`;
+    img.alt = album;
+    img.className = 'album';
 
-        // アーティファクト情報取得
-        let dispArtifacts = artifacts.filter(
-          (row) => row[appsettings.albumNameCol] === alubumName
-        );
+    const titleDiv = document.createElement('div');
+    titleDiv.className = 'album-title';
+    titleDiv.textContent = album;
 
-        // タグ生成
-        tag += ' <h2 class="h2-display">Artifacts Select</h2>';
-        tag += '<div class="album-list">';
-        dispArtifacts.forEach(function (dispArtifact, index) {
-          tag +=
-            '<div class="album-item" onclick="createDisplay(display.PUZZLE,\'' +
-            alubumName +
-            "'," +
-            index +
-            ')">';
-          tag +=
-            ' <img src="' +
-            appsettings.albumImagePath +
-            +(index + 1) +
-            '_' +
-            alubumName +
-            '.jpg" id="' +
-            alubumName +
-            '" name="album" alt="' +
-            alubumName +
-            '" class="album">';
-          tag +=
-            '<div class="album-title">' +
-            dispArtifact[appsettings.artifactsNameCol] +
-            '</div>';
-          tag += ' </div>';
-        });
-        tag += ' </div>'; // album-list
+    div.appendChild(img);
+    div.appendChild(titleDiv);
+    albumList.appendChild(div);
+  });
+}
 
-        tag += ' <!-- 戻る ボタン -->';
-        tag +=
-          '   <button id="back" onclick="createDisplay(display.TOP)" class="btn btn--main btn--radius btn--cubic">←BACK</button>';
-      } else if (mode === display.PUZZLE) {
-        //////////////////////////////////////////
-        // PUZZLE画面
-        //////////////////////////////////////////
-        tag += ' <h2 class="h2-display">Puzzle</h2>';
-      } else if (mode === display.RESULT) {
-        //////////////////////////////////////////
-        // RESULT画面
-        //////////////////////////////////////////
-        tag += ' <h2 class="h2-display">Result</h2>';
-      }
+function renderSelectScreen(albumName) {
+  const selectList = document.getElementById('album-list-select');
+  selectList.innerHTML = '';
 
-      // タグ流し込み
-      $('#display').append(tag);
+  let dispArtifacts = artifacts.filter(
+    (row) => row[appsettings.albumNameCol] === albumName
+  );
+  dispArtifacts.forEach((artifact, index) => {
+    const div = document.createElement('div');
+    div.className = 'album-item';
+    div.onclick = () => goToScreen(display.PUZZLE, albumName, index);
 
-      // CSS適用
-      changeColor(0);
-    } finally {
-      // 最後にスピナーを非表示
-      $('#spinner').hide();
-    }
-  }, 0); // 0ms で「次のイベントループ」で処理実行（レンダリング保証）
+    const img = document.createElement('img');
+    img.src = `${appsettings.albumImagePath}${index + 1}_${albumName}.jpg`;
+    img.alt = albumName;
+    img.className = 'album';
+
+    const titleDiv = document.createElement('div');
+    titleDiv.className = 'album-title';
+    titleDiv.textContent = artifact[appsettings.artifactsNameCol];
+
+    div.appendChild(img);
+    div.appendChild(titleDiv);
+    selectList.appendChild(div);
+  });
+
+  // 戻るボタン
+  document.getElementById('back-to-top').onclick = () =>
+    goToScreen(display.TOP);
+}
+
+function renderPuzzleScreen(albumName, artifactIndex) {
+  const puzzleDiv = document.getElementById('puzzle-content');
+  puzzleDiv.innerHTML = `<p>パズル画面（アルバム: ${albumName}、アーティファクト番号: ${artifactIndex}）</p>`;
+
+  // 戻るボタン
+  document.getElementById('back-to-select').onclick = () =>
+    goToScreen(display.SELECT, albumName);
+}
+
+function renderResultScreen() {
+  const resultDiv = document.getElementById('result-content');
+  resultDiv.innerHTML = `<p>結果画面</p>`;
+
+  document.getElementById('back-to-puzzle').onclick = () =>
+    goToScreen(display.PUZZLE, currentAlbum, currentArtifactIndex);
+  document.getElementById('back-to-top-from-result').onclick = () =>
+    goToScreen(display.TOP);
 }

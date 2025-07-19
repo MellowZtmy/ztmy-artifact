@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,7 +7,6 @@
     <link rel="apple-touch-icon" href="images/favicon.png" type="image/png" />
     <title>ずとまよアーティファクト</title>
     <link rel="stylesheet" href="css/styles.css" />
-    <!-- Google tag (gtag.js) -->
     <script
       async
       src="https://www.googletagmanager.com/gtag/js?id=G-NMRVGPDL4C"
@@ -18,20 +17,71 @@
         dataLayer.push(arguments);
       }
       gtag('js', new Date());
-
       gtag('config', 'G-NMRVGPDL4C');
     </script>
   </head>
   <body>
-    <!-- スピナー -->
     <div id="confetti" class="confetti">
       <canvas></canvas>
-      <h1 id="header" onclick="createDisplay(display.TOP)" class="center-text">
-        ずとまよ<br>アーティファクト
+      <h1 id="header" onclick="goToScreen('top')" class="center-text">
+        ずとまよ<br />アーティファクト
       </h1>
       <div id="spinner" class="spinner"></div>
-      <div class="margin-bottom-100" id="display"></div>
+
+      <!-- 画面エリア -->
+      <div id="screen-top" class="screen">
+        <h2 class="h2-display">Album Select</h2>
+        <div class="album-list" id="album-list-top"></div>
+        <h2
+          id="changeColor"
+          class="center-text margin-top-20"
+          onclick="changeColor(1)"
+        >
+          Color ↺
+        </h2>
+        <footer style="text-align: center; margin-top: 2rem">
+          <a href="about.html" target="_blank" rel="noopener noreferrer"
+            >サイト情報</a
+          >
+        </footer>
+      </div>
+
+      <div id="screen-select" class="screen" hidden>
+        <h2 class="h2-display">Artifacts Select</h2>
+        <div class="album-list" id="album-list-select"></div>
+        <div class="quiz-mode-container" id="back-to-top">
+          <input type="button" name="quizMode" value="clear" hidden="" />
+          <label for="clear" class="quizModeRadio">←BACK</label>
+        </div>
+      </div>
+
+      <div id="screen-puzzle" class="screen" hidden>
+        <h2 class="h2-display">Puzzle</h2>
+        <div id="puzzle-content"></div>
+        <div class="quiz-mode-container" id="back-to-select">
+          <input type="button" name="quizMode" value="clear" hidden="" />
+          <label for="clear" class="quizModeRadio">←BACK</label>
+        </div>
+      </div>
+
+      <div id="screen-result" class="screen" hidden>
+        <h2 class="h2-display">Result</h2>
+        <div id="result-content"></div>
+        <button
+          id="back-to-puzzle"
+          class="btn btn--main btn--radius btn--cubic"
+        >
+          ←BACK
+        </button>
+        <button
+          id="back-to-top-from-result"
+          class="btn btn--main btn--radius btn--cubic"
+        >
+          トップへ戻る
+        </button>
+      </div>
     </div>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="js/confetti.js"></script>
     <script src="js/functions.js"></script>
