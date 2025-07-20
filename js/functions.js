@@ -70,25 +70,30 @@ function showError(errorMsg1, errorMsg2) {
 
 // カラーチェンジ
 function changeColor(plusCount) {
-  // 今のカラーインデックスを取得し、次のインデックス設定（ない場合最新のもの）
+  // 現在のカラーインデックスを取得
   var colorIndex =
     Number(getLocal('colorIndex') ?? colorSets.length - 1) + plusCount;
 
-  // 設定するカラーを設定（ない場合最初に戻る）
+  // 対象のカラーデータを取得（存在しない場合は最初に戻る）
   var colorSet = colorSets[colorIndex] ?? colorSets[0];
-  $('body').css({
-    background: colorSet[1],
+
+  // HTML全体の背景とテキストカラーを変更（グラデーションを適用する）
+  $('html, body').css({
+    background: colorSet[1], // linear-gradient もここでOK
     color: colorSet[2],
   });
+
+  // ボタンの色を設定
   $('.normalButton').css({
     'background-color': colorSet[3],
     color: colorSet[4],
   });
 
-  // 今のカラー設定をローカルストレージに保存
+  // ローカルストレージに現在のカラーインデックスを保存
   var colorIndexNow = colorSets[colorIndex] ? colorIndex : 0;
   setLocal('colorIndex', colorIndexNow);
-  // 今のカラー表示
+
+  // 現在のカラー表示
   $('#changeColor').html(
     'Color ↺ <br>(' + (colorIndexNow + 1) + '/' + colorSets.length + ')'
   );

@@ -35,7 +35,7 @@ $(document).ready(async function () {
     // トップ画面へ遷移
     goToScreen(display.TOP);
 
-    // 初期カラーを適用（0番目）
+    // カラーを適用
     changeColor(0);
   } catch (error) {
     // データ読み込み失敗時にエラー表示

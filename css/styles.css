@@ -159,8 +159,9 @@ html {
 
 /* 画面最大幅を設定 */
 .confetti {
-  max-width: 768px;         /* タブレットグレイ程度の最大幅 */
-  margin: 0 auto;           /* 中央揃え */
+  max-width: 768px;
+  margin: 0 auto;
+  min-height: 100vh; /* ←ここを追加！画面の高さまで広げる */
 }
 
 /* スピナー */
