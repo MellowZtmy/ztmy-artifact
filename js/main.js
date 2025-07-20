@@ -108,6 +108,23 @@ function renderTopScreen() {
     div.appendChild(titleDiv);
     albumList.appendChild(div);
   });
+
+  // coming soon
+  const div = document.createElement('div');
+  div.className = 'album-item';
+
+  const img = document.createElement('img');
+  img.src = `${appsettings.albumImagePath}はてな.jpg`;
+  img.alt = 'はてな';
+  img.className = 'album';
+
+  const titleDiv = document.createElement('div');
+  titleDiv.className = 'album-title';
+  titleDiv.textContent = 'coming soon...';
+
+  div.appendChild(img);
+  div.appendChild(titleDiv);
+  albumList.appendChild(div);
 }
 
 /**
