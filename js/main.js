@@ -171,8 +171,8 @@ function renderSelectScreen(albumName) {
       div.onclick = () => goToScreen(display.PUZZLE, albumName, index);
 
       const img = document.createElement('img');
-      img.src = `${appsettings.albumImagePath}はてな.jpg`;
-      img.alt = albumName;
+      img.src = `${appsettings.artifactImagePath}はてな.jpg`;
+      img.alt = artifact[appsettings.artifactsNameCol];
       img.className = 'artifact';
 
       div.appendChild(img);
