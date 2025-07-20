@@ -1,7 +1,7 @@
-/* テキスト用CSS */
-*{
-  font-family:"ＭＳ Ｐゴシック",sans-serif;
-  transition: all 0.3s;
+/* ベースフォント */
+* {
+  font-family: "メイリオ", "ヒラギノ角ゴ ProN W3", sans-serif;
+  transition: all 0.3s ease;
 }
 
 .center-text {
@@ -31,16 +31,23 @@
   font-weight: bold;
 }
 
+/* タイトル部分 */
 h1 {
-  padding: 1rem 2rem;
+  padding: 1.2rem 2rem;
   border-top: 3px solid ;
   border-bottom: 3px solid ;
   cursor: pointer;
+  text-align: center;
+  font-size: 2rem;
+  letter-spacing: 1px;
 }
 
-h2.h2-display{
+h2.h2-display {
+  font-size: 1.5rem;
   border-bottom: 2px dashed ;
-  padding-bottom: 5px;
+  padding-bottom: 0.3rem;
+  margin-top: 2rem;
+  text-align: center;
 }
 
 .font-one-point-two {
@@ -81,58 +88,22 @@ html {
   margin: 20px 0;
 }
 
+/* ボタン */
 .normalButton {
-  display: inline-block;
-  padding: 12px 24px;
-  font-size: 1rem;
-  font-weight: bold;
-  border: 2px solid #ccc;
+  background: white;
+  border: 2px solid #bbb;
   border-radius: 30px;
+  padding: 12px 24px;
+  font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
 }
 
 .normalButton:hover {
-  background-color: #f7f7f7;
+  background-color: #f0f0f0;
+  box-shadow: 0 5px 14px rgba(0,0,0,0.15);
 }
-
-
-/* 画像用CSS */
-.album-list {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 20px;
-  padding: 10px 0;
-}
-
-.album-item {
-  position: relative;
-  width: 100px;
-  transition: transform 0.3s, box-shadow 0.3s;
-  cursor: pointer;
-  text-align: center;
-}
-
-.album-item:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-}
-
-.album {
-  width: 100%;
-  height: auto;
-  border-radius: 12px;
-  display: block;
-}
-
-.album-title {
-  margin-top: 6px;
-  font-weight: bold;
-  font-size: 0.9rem;
-}
-
 
 /* 画面表示用CSS */
 .margin-top-20 {
@@ -198,44 +169,77 @@ html {
   }
 }
 
-/* アーティファクト選択：曲名（大見出し） */
+/* 見出し（曲名） */
 .song-header {
-  font-size: 1.6rem;       /* 大きく目立たせる */
-  font-weight: bold;
-  margin-top: 0rem;
-  margin-bottom: 0rem;
-  /* 文字色は指定しない（既存テーマに従う） */
-  /* border-bottom: 2px solid #ccc; 見出しっぽく */
-  padding-bottom: 0.4rem;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  border-left: 6px solid ;
+  padding-left: 0.8rem;
 }
 
-/* アーティファクトリスト */
+/* アーティファクトリスト全体 */
 .artifact-list {
   display: flex;
   flex-direction: column;
+  gap: 24px;
+  padding: 1rem 0;
+}
+
+/* 曲ごとのアーティファクトブロック */
+.song-artifacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* アーティファクト画像アイテム */
+.artifact-item img.artifact {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 2px solid #ccc;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.artifact-item img.artifact:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* アルバムカード */
+.album-list {
+  display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
   gap: 20px;
   padding: 10px 0;
 }
-
-.song-artifacts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 2rem;
+.album-item {
+  width: 120px;
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
-/* アーティファクト画像 */
-.artifact-item img.artifact {
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
-  border-radius: 8px;
-  border: 1px solid #aaa;
-  transition: transform 0.2s ease;
+.album-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
-/* ホバーで拡大効果 */
-.artifact-item img.artifact:hover {
-  transform: scale(1.05);
+.album {
+  width: 100%;
+  height: auto;
+  border-radius: 16px;
+  border: 1px solid #ccc;
+}
+
+.album-title {
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: bold;
 }

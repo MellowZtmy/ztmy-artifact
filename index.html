@@ -23,53 +23,64 @@
   <body>
     <div id="confetti" class="confetti">
       <canvas></canvas>
-      <h1 id="header" onclick="goToScreen('top')" class="center-text">
-        ずとまよ<br />アーティファクト
-      </h1>
+
+      <!-- タイトル -->
+      <header>
+        <h1 id="header" onclick="goToScreen('top')" class="center-text">
+          ずとまよ<br /><span style="font-size: 0.8em">アーティファクト</span>
+        </h1>
+      </header>
+
       <div id="spinner" class="spinner"></div>
 
-      <!-- 画面エリア -->
+      <!-- トップ画面 -->
       <div id="screen-top" class="screen">
-        <h2 class="h2-display">Album Select</h2>
-        <div class="album-list" id="album-list-top"></div>
+        <section class="margin-top-20">
+          <h2 class="h2-display center-text">Album Select</h2>
+          <div class="album-list" id="album-list-top"></div>
+        </section>
 
-        <h2
-          id="changeColor"
-          class="center-text margin-top-20"
-          onclick="changeColor(1)"
-        >
-          Color ↺
-        </h2>
-        <footer style="text-align: center; margin-top: 2rem">
+        <section class="margin-top-20">
+          <h2 id="changeColor" class="center-text" onclick="changeColor(1)">
+            Color ↺
+          </h2>
+        </section>
+
+        <footer class="center-text" style="margin-top: 3rem">
           <a href="about.html" target="_blank" rel="noopener noreferrer"
             >サイト情報</a
           >
         </footer>
       </div>
 
+      <!-- アーティファクト選択画面 -->
       <div id="screen-select" class="screen" hidden>
-        <h2 class="h2-display">Artifacts Select</h2>
-        <div class="artifact-list" id="artifact-list-select"></div>
+        <section>
+          <h2 class="h2-display center-text">Artifacts Select</h2>
+          <div class="artifact-list" id="artifact-list-select"></div>
+        </section>
         <div class="normalButtonContainer" id="back-to-top">
-          <input type="button" value="clear" hidden="" />
-          <label for="clear" class="normalButton">←BACK</label>
+          <input type="button" value="clear" hidden />
+          <label for="clear" class="normalButton">← BACK</label>
         </div>
       </div>
 
+      <!-- パズル画面 -->
       <div id="screen-puzzle" class="screen" hidden>
-        <h2 class="h2-display">Puzzle</h2>
+        <h2 class="h2-display center-text">Puzzle</h2>
         <div id="puzzle-content"></div>
         <div class="normalButtonContainer" id="back-to-select">
-          <input type="button" value="clear" hidden="" />
-          <label for="clear" class="normalButton">←BACK</label>
+          <input type="button" value="clear" hidden />
+          <label for="clear" class="normalButton">← BACK</label>
         </div>
       </div>
 
+      <!-- 結果画面 -->
       <div id="screen-result" class="screen" hidden>
-        <h2 class="h2-display">Result</h2>
+        <h2 class="h2-display center-text">Result</h2>
         <div id="result-content"></div>
-        <div class="normalButtonContainer" id="back-to-puzzzle">
-          <input type="button" value="clear" hidden="" />
+        <div class="normalButtonContainer" id="back-to-puzzle">
+          <input type="button" value="clear" hidden />
           <label for="clear" class="normalButton">TOP</label>
         </div>
       </div>
