@@ -172,7 +172,6 @@ html {
 .song-header {
   font-size: 1.4rem;
   font-weight: 700;
-  margin-top: 2rem;
   margin-bottom: 1rem;
   border-left: 6px solid ;
   padding-left: 0.8rem;
@@ -182,8 +181,6 @@ html {
 .artifact-list {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding: 1rem 0;
 }
 
 /* 曲ごとのアーティファクトブロック */
