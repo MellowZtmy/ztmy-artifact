@@ -209,6 +209,14 @@ html {
 }
 
 /* アーティファクトリスト */
+.artifact-list {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 10px 0;
+}
+
 .song-artifacts {
   display: flex;
   flex-wrap: wrap;

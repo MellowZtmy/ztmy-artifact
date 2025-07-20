@@ -132,7 +132,7 @@ function renderTopScreen() {
  * @param {string} albumName 選択されたアルバム名
  */
 function renderSelectScreen(albumName) {
-  const selectList = document.getElementById('album-list-select');
+  const selectList = document.getElementById('artifact-list-select');
   selectList.innerHTML = '';
 
   // 対象アルバムに属するアーティファクトを抽出
