@@ -50,6 +50,9 @@ $(document).ready(async function () {
  * @param {number} artifactIndex アーティファクトのインデックス（必要に応じて）
  */
 function goToScreen(screenName, albumName = '', artifactIndex = 0) {
+  // ローディングスピナー表示
+  $('#spinner').show();
+
   // 全ての画面を非表示にする
   document.querySelectorAll('.screen').forEach((el) => (el.hidden = true));
 
@@ -151,7 +154,7 @@ function renderSelectScreen(albumName) {
       div.onclick = () => goToScreen(display.PUZZLE, albumName, index);
 
       const img = document.createElement('img');
-      img.src = `${appsettings.albumImagePath}${index + 1}_${albumName}.jpg`;
+      img.src = `${appsettings.albumImagePath}はてな.jpg`;
       img.alt = albumName;
       img.className = 'artifact';
 
