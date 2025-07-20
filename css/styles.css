@@ -201,10 +201,10 @@ html {
 .song-header {
   font-size: 1.6rem;       /* 大きく目立たせる */
   font-weight: bold;
-  margin-top: 2rem;
-  margin-bottom: 0.8rem;
+  margin-top: 0rem;
+  margin-bottom: 0rem;
   /* 文字色は指定しない（既存テーマに従う） */
-  border-bottom: 2px solid #ccc; /* 見出しっぽく */
+  /* border-bottom: 2px solid #ccc; 見出しっぽく */
   padding-bottom: 0.4rem;
 }
 
