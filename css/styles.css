@@ -177,21 +177,21 @@ html {
   padding-left: 0.8rem;
 }
 
-/* アーティファクトリスト全体 */
-.artifact-list {
+/* パズルリスト全体 */
+.puzzle-list {
   display: flex;
   flex-direction: column;
 }
 
-/* 曲ごとのアーティファクトブロック */
-.song-artifacts {
+/* 曲ごとのパズルブロック */
+.song-puzzles {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
 }
 
-/* アーティファクト画像アイテム */
-.artifact-item img.artifact {
+/* パズル画像アイテム */
+.puzzle-item img.puzzle {
   width: 90px;
   height: 90px;
   object-fit: cover;
@@ -202,7 +202,7 @@ html {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.artifact-item img.artifact:hover {
+.puzzle-item img.puzzle:hover {
   transform: scale(1.08);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }

@@ -1,18 +1,18 @@
 // 画面の識別用定数
 const display = {
   TOP: 'top', // トップ画面
-  SELECT: 'select', // アーティファクト選択画面
+  SELECT: 'select', // パズル選択画面
   PUZZLE: 'puzzle', // パズルプレイ画面
   RESULT: 'result', // 結果画面
 };
 
 // 設定・データ保持用のグローバル変数
 var appsettings = []; // アプリの設定ファイル（JSON）
-var artifacts = []; // アーティファクトの一覧（CSV）
+var puzzles = []; // パズルの一覧（CSV）
 var colorSets = []; // カラーセットの情報（CSV）
 
 var currentAlbum = ''; // 現在選択中のアルバム名
-var currentArtifactIndex = 0; // 現在のアーティファクトインデックス
+var currentPuzzleIndex = 0; // 現在のパズルインデックス
 
 // ページ読み込み時の初期化処理
 $(document).ready(async function () {
@@ -23,10 +23,10 @@ $(document).ready(async function () {
     // 設定ファイルを読み込み
     appsettings = await getJsonData('appsettings.json');
 
-    // アーティファクトCSV読み込み（指定行スキップ）
-    artifacts = await fetchCsvData(
-      appsettings.artifactsFileName,
-      appsettings.artifactSkipRowCount
+    // パズルCSV読み込み（指定行スキップ）
+    puzzles = await fetchCsvData(
+      appsettings.puzzlesFileName,
+      appsettings.puzzleSkipRowCount
     );
 
     // カラーセット読み込み（先頭1行スキップ）
@@ -47,9 +47,9 @@ $(document).ready(async function () {
  * 画面遷移を行う共通関数
  * @param {string} screenName 遷移先の画面名
  * @param {string} albumName アルバム名（必要に応じて）
- * @param {number} artifactIndex アーティファクトのインデックス（必要に応じて）
+ * @param {number} puzzleIndex パズルのインデックス（必要に応じて）
  */
-function goToScreen(screenName, albumName = '', artifactIndex = 0) {
+function goToScreen(screenName, albumName = '', puzzleIndex = 0) {
   // ローディングスピナー表示
   $('#spinner').show();
 
@@ -65,9 +65,9 @@ function goToScreen(screenName, albumName = '', artifactIndex = 0) {
     document.getElementById('screen-select').hidden = false;
     renderSelectScreen(albumName);
   } else if (screenName === display.PUZZLE) {
-    currentArtifactIndex = artifactIndex;
+    currentPuzzleIndex = puzzleIndex;
     document.getElementById('screen-puzzle').hidden = false;
-    renderPuzzleScreen(albumName, artifactIndex);
+    renderPuzzleScreen(albumName, puzzleIndex);
   } else if (screenName === display.RESULT) {
     document.getElementById('screen-result').hidden = false;
     renderResultScreen();
@@ -86,7 +86,7 @@ function renderTopScreen() {
 
   // ユニークなアルバム名一覧を取得
   let albums = [
-    ...new Set(artifacts.map((row) => row[appsettings.albumNameCol])),
+    ...new Set(puzzles.map((row) => row[appsettings.albumNameCol])),
   ];
 
   // 各アルバムを画面に追加
@@ -128,32 +128,32 @@ function renderTopScreen() {
 }
 
 /**
- * アーティファクト選択画面の描画処理（曲ごとにまとめる）
+ * パズル選択画面の描画処理（曲ごとにまとめる）
  * @param {string} albumName 選択されたアルバム名
  */
 function renderSelectScreen(albumName) {
-  const selectList = document.getElementById('artifact-list-select');
+  const selectList = document.getElementById('puzzle-list-select');
   selectList.innerHTML = '';
 
-  // 対象アルバムに属するアーティファクトを抽出
-  let dispArtifacts = artifacts.filter(
+  // 対象アルバムに属するパズルを抽出
+  let dispPuzzles = puzzles.filter(
     (row) => row[appsettings.albumNameCol] === albumName
   );
 
-  // 曲名でアーティファクトをグループ化
+  // 曲名でパズルをグループ化
   const groupedBySong = {};
-  dispArtifacts.forEach((artifact, index) => {
-    const songName = artifact[appsettings.songNameCol]; // 曲名列
+  dispPuzzles.forEach((puzzle, index) => {
+    const songName = puzzle[appsettings.songNameCol]; // 曲名列
 
     if (!groupedBySong[songName]) {
       groupedBySong[songName] = [];
     }
 
-    // アーティファクトとそのインデックスを保存
-    groupedBySong[songName].push({ artifact, index });
+    // パズルとそのインデックスを保存
+    groupedBySong[songName].push({ puzzle, index });
   });
 
-  // 各曲ごとにヘッダーとアーティファクトを描画
+  // 各曲ごとにヘッダーとパズルを描画
   for (const song in groupedBySong) {
     // 曲名見出し
     const songHeader = document.createElement('h3');
@@ -161,19 +161,19 @@ function renderSelectScreen(albumName) {
     songHeader.textContent = song;
     selectList.appendChild(songHeader);
 
-    // アーティファクト画像リスト
+    // パズル画像リスト
     const songContainer = document.createElement('div');
-    songContainer.className = 'song-artifacts';
+    songContainer.className = 'song-puzzles';
 
-    groupedBySong[song].forEach(({ artifact, index }) => {
+    groupedBySong[song].forEach(({ puzzle, index }) => {
       const div = document.createElement('div');
-      div.className = 'artifact-item';
+      div.className = 'puzzle-item';
       div.onclick = () => goToScreen(display.PUZZLE, albumName, index);
 
       const img = document.createElement('img');
-      img.src = `${appsettings.artifactImagePath}はてな.jpg`;
-      img.alt = artifact[appsettings.artifactsNameCol];
-      img.className = 'artifact';
+      img.src = `${appsettings.puzzleImagePath}はてな.jpg`;
+      img.alt = puzzle[appsettings.puzzlesNameCol];
+      img.className = 'puzzle';
 
       div.appendChild(img);
       songContainer.appendChild(div);
@@ -190,15 +190,15 @@ function renderSelectScreen(albumName) {
 /**
  * パズル画面の描画（仮の表示のみ）
  * @param {string} albumName アルバム名
- * @param {number} artifactIndex アーティファクトのインデックス
+ * @param {number} puzzleIndex パズルのインデックス
  */
-function renderPuzzleScreen(albumName, artifactIndex) {
+function renderPuzzleScreen(albumName, puzzleIndex) {
   const puzzleDiv = document.getElementById('puzzle-content');
 
   // 仮のパズル表示
-  puzzleDiv.innerHTML = `<p>パズル画面（アルバム: ${albumName}、アーティファクト番号: ${artifactIndex}）</p>`;
+  puzzleDiv.innerHTML = `<p>パズル画面（アルバム: ${albumName}、パズル番号: ${puzzleIndex}）</p>`;
 
-  // 戻るボタン（アーティファクト選択へ）
+  // 戻るボタン（パズル選択へ）
   document.getElementById('back-to-select').onclick = () =>
     goToScreen(display.SELECT, albumName);
 }
@@ -212,7 +212,7 @@ function renderResultScreen() {
 
   // パズル画面に戻るボタン
   document.getElementById('back-to-puzzle').onclick = () =>
-    goToScreen(display.PUZZLE, currentAlbum, currentArtifactIndex);
+    goToScreen(display.PUZZLE, currentAlbum, currentPuzzleIndex);
 
   // トップ画面に戻るボタン
   document.getElementById('back-to-top-from-result').onclick = () =>
