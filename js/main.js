@@ -193,48 +193,12 @@ function renderSelectScreen(albumName) {
  * @param {number} artifactIndex アーティファクトのインデックス
  */
 function renderPuzzleScreen(albumName, artifactIndex) {
-  const puzzleDiv = document.getElementById('puzzle-grid');
-  puzzleDiv.innerHTML = '';
+  const puzzleDiv = document.getElementById('puzzle-content');
 
-  const data = artifacts[artifactIndex];
-  const size = Number(data[appsettings.puzzleSizeCol]); // ← パズルの一辺のサイズ
-  const totalCells = size * size;
-  const binaryString = data[appsettings.puzzleDataCol];
+  // 仮のパズル表示
+  puzzleDiv.innerHTML = `<p>パズル画面（アルバム: ${albumName}、アーティファクト番号: ${artifactIndex}）</p>`;
 
-  if (!binaryString || binaryString.length !== totalCells) {
-    puzzleDiv.innerHTML = '<p>パズルデータが不正です。</p>';
-    return;
-  }
-
-  // CSSグリッド列数を更新（inline styleで対応）
-  puzzleDiv.style.display = 'grid';
-  puzzleDiv.style.gridTemplateColumns = `repeat(${size}, 24px)`;
-  puzzleDiv.style.gridTemplateRows = `repeat(${size}, 24px)`;
-
-  for (let i = 0; i < totalCells; i++) {
-    const cell = document.createElement('div');
-    cell.className = 'puzzle-cell';
-    cell.dataset.index = i;
-
-    // 任意：答え表示（デバッグ用）
-    if (binaryString[i] === '1') cell.classList.add('filled');
-
-    // クリックで状態を切り替える（filled → crossed → blank）
-    cell.onclick = () => {
-      if (cell.classList.contains('filled')) {
-        cell.classList.remove('filled');
-        cell.classList.add('crossed');
-      } else if (cell.classList.contains('crossed')) {
-        cell.classList.remove('crossed');
-      } else {
-        cell.classList.add('filled');
-      }
-    };
-
-    puzzleDiv.appendChild(cell);
-  }
-
-  // 戻るボタンのイベント設定
+  // 戻るボタン（アーティファクト選択へ）
   document.getElementById('back-to-select').onclick = () =>
     goToScreen(display.SELECT, albumName);
 }
